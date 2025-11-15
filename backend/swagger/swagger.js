@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       {
-        url: "https://your-render-url.onrender.com", // 🔁 Replace with your actual Render URL
+        url: "https://cse341-node-zndx.onrender.com", //
       },
     ],
   },

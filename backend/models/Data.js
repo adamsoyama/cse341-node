@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-// Define the schema for your professional profile
 const dataSchema = new mongoose.Schema({
   professionalName: String,
   base64Image: String,
@@ -9,8 +8,10 @@ const dataSchema = new mongoose.Schema({
     url: String,
   },
   primaryDescription: String,
+  summaryText: String,
   workDescription1: String,
   workDescription2: String,
+  skills: [String],
   linkTitleText: String,
   linkedInLink: {
     text: String,
@@ -20,8 +21,6 @@ const dataSchema = new mongoose.Schema({
     text: String,
     link: String,
   },
-  contactText: String,
 });
 
-// Export the model
 module.exports = mongoose.model("Data", dataSchema);

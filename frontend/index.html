@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Professional Profile</title>
     <link
       rel="stylesheet"
       href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
@@ -12,62 +12,119 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="style.css" />
-    <script src="./script.js" defer></script>
+    <script src="script.js" defer></script>
   </head>
 
   <body>
+    <!-- 🔝 Top Navbar -->
+    <nav class="navbar">
+      <a href="/">Profile</a>
+      <a href="/api-docs" target="_blank">Contacts API</a>
+      <button id="themeToggle" class="theme-toggle">Toggle Theme</button>
+    </nav>
+
+    <!-- 🔽 Main Content -->
     <div class="container">
-      <div class="content">
-        <div class="about">
-          <h1>
-            <div class="proName" id="professionalName"></div>
-            <div class="stage">
-              <div class="pyramid3d">
-                <div class="triangle side1"></div>
-                <div class="triangle side2"></div>
-                <div class="triangle side3"></div>
-                <div class="triangle side4"></div>
-              </div>
-            </div>
-          </h1>
-          <div class="flex-container">
-            <div class="flex-child">
-              <img src="" alt="" id="professionalImage" />
-            </div>
-            <div class="flex-child">
-              <h3>
-                <a href="" target="_blank" id="nameLink"></a
-                ><span id="primaryDescription"></span>
-              </h3>
+      <!-- 🖼️ Left Panel: Profile Image -->
+      <div class="left-panel">
+        <img src="" alt="Profile Image" id="professionalImage" />
+      </div>
+
+      <!-- 📄 Right Panel: Details -->
+      <div class="right-panel">
+        <!-- 🔠 Name + Pyramid -->
+        <div class="name-row">
+          <div class="proName" id="professionalName">Adams Oyama</div>
+          <div class="stage">
+            <div class="pyramid3d">
+              <div class="triangle side1"></div>
+              <div class="triangle side2"></div>
+              <div class="triangle side3"></div>
+              <div class="triangle side4"></div>
             </div>
           </div>
-          <p class="pleft" id="workDescription1"></p>
-          <p class="pright" id="workDescription2"></p>
-          <h3 id="linkTitleText"></h3>
+        </div>
+
+        <!-- 🔗 Name Link + Primary Description -->
+        <h3>
+          <a href="" target="_blank" id="nameLink">Visit Portfolio</a>
+          <span id="primaryDescription">
+            Full-stack developer, backend architect, and AI enthusiast.
+          </span>
+        </h3>
+
+        <!-- 🧠 Professional Summary -->
+        <div class="section">
+          <h3>Professional Summary</h3>
+          <p>
+            Adams is a highly versatile full-stack developer with deep expertise
+            in backend systems, API design, and scalable architecture. He’s
+            built production-grade applications using Node.js, Express, MongoDB,
+            and PostgreSQL, and has led multiple backend integrations for
+            education platforms, fintech tools, and AI-powered services.
+          </p>
+          <p>
+            With a passion for teaching and transformation, Adams bridges the
+            gap between technology and human impact. He’s contributed to
+            open-source projects, mentored junior developers, and built tools
+            that empower communities. His work reflects a commitment to clean
+            code, intuitive UX, and resilient infrastructure.
+          </p>
+        </div>
+
+        <!-- 💼 Work Experience -->
+        <div class="section">
+          <h3>Work Experience</h3>
+          <p id="workDescription1">
+            I drive the full-stack lifecycle of production apps and websites,
+            with a front-end focus on crafting fluid user experiences and a
+            backend focus on secure, scalable APIs.
+          </p>
+          <p id="workDescription2">
+            I craft software solutions that prioritize user-friendliness,
+            security, and simplicity by developing full-stack production apps
+            that seamlessly integrate robust backend services with engaging,
+            user-centric front-end experiences.
+          </p>
+        </div>
+
+        <!-- 🛠️ Skills -->
+        <div class="section">
+          <h3>Technical Skills</h3>
           <ul>
-            <li><a href="" target="_blank" id="linkedInLink"></a></li>
-            <li><a href="" target="_blank" id="githubLink"></a></li>
+            <li>JavaScript, TypeScript, React, Next.js</li>
+            <li>Node.js, Express, MongoDB, PostgreSQL</li>
+            <li>Python, Flask, Django</li>
+            <li>Java SE, Spring Boot</li>
+            <li>RESTful APIs, Swagger, JWT Auth</li>
+            <li>AI & Machine Learning (NLP, TensorFlow)</li>
+            <li>WordPress, PHP, MySQL</li>
+            <li>Docker, GitHub Actions, CI/CD</li>
           </ul>
-          <p id="contactText"></p>
+        </div>
+
+        <!-- 🔗 Links -->
+        <div class="section">
+          <h3 id="linkTitleText">Connect with Me</h3>
+          <ul class="link-group">
+            <li>
+              <a href="" target="_blank" id="linkedInLink"
+                >Connect on LinkedIn</a
+              >
+            </li>
+            <li>
+              <a href="" target="_blank" id="githubLink"
+                >Explore My GitHub Projects</a
+              >
+            </li>
+          </ul>
         </div>
       </div>
     </div>
-
-    <!-- 🔗 Navigation Links Section -->
-    <div style="margin-top: 40px; text-align: center">
-      <h2>Explore More</h2>
-      <ul style="list-style: none; padding: 0">
-        <li>
-          <a href="/api-docs" target="_blank"
-            >📘 View Contacts API Documentation</a
-          >
-        </li>
-        <li>
-          <a href="/professional" target="_blank"
-            >👤 View Professional Profile (JSON)</a
-          >
-        </li>
-      </ul>
-    </div>
+    <!-- 🔻 Footer -->
+    <footer class="footer">
+      <p>&copy; 2025 Modewani Group. All rights reserved.</p>
+      <p>Contact: <a href="mailto:info@modewani.com">info@modewani.com</a></p>
+    </footer>
   </body>
 </html>

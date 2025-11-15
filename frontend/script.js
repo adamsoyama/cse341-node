@@ -2,15 +2,22 @@
 
 // Fetch data from the backend API
 async function apiFetch(url) {
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch data:", error);
+    displayError("Unable to load profile data. Please try again later.");
+    return null;
+  }
 }
 
 // Main function to get and display data
 const getData = async () => {
-  const data = await apiFetch("/professional"); // ✅ relative path for backend integration
-  displayAllData(data);
+  const data = await apiFetch("/professional");
+  if (data) displayAllData(data);
 };
 
 // Display all profile data
@@ -22,58 +29,111 @@ function displayAllData(data) {
   displayLinkTitleText(data);
   displayLinkedInLink(data);
   displayGitHubLink(data);
+  displaySummary(data.summaryText);
+  displaySkills(data.skills);
 }
 
 // Display professional name
-function displayProfessionalName(n) {
-  let professionalName = document.getElementById("professionalName");
-  professionalName.innerHTML = n;
+function displayProfessionalName(name) {
+  const professionalName = document.getElementById("professionalName");
+  professionalName.textContent = name;
 }
 
 // Display profile image
 function displayImage(img) {
-  let image = document.getElementById("professionalImage");
-  image.src = img; // ✅ assumes full base64 string includes "data:image/png;base64,..."
+  const image = document.getElementById("professionalImage");
+  image.src = img;
 }
 
 // Display name link and primary description
 function displayPrimaryDescription(data) {
-  let nameLink = document.getElementById("nameLink");
-  nameLink.innerHTML = data.nameLink.firstName;
+  const nameLink = document.getElementById("nameLink");
+  nameLink.textContent = data.nameLink.firstName;
   nameLink.href = data.nameLink.url;
 
-  let primaryDescription = document.getElementById("primaryDescription");
-  primaryDescription.innerHTML = data.primaryDescription;
+  const primaryDescription = document.getElementById("primaryDescription");
+  primaryDescription.textContent = data.primaryDescription;
 }
 
 // Display work descriptions
 function displayWorkDescription(data) {
-  let workDescription1 = document.getElementById("workDescription1");
-  workDescription1.innerHTML = data.workDescription1;
-
-  let workDescription2 = document.getElementById("workDescription2");
-  workDescription2.innerHTML = data.workDescription2;
+  const workDescription1 = document.getElementById("workDescription1");
+  const workDescription2 = document.getElementById("workDescription2");
+  workDescription1.textContent = data.workDescription1;
+  workDescription2.textContent = data.workDescription2;
 }
 
 // Display link title
 function displayLinkTitleText(data) {
-  let linkTitle = document.getElementById("linkTitleText");
-  linkTitle.innerHTML = data.linkTitleText;
+  const linkTitle = document.getElementById("linkTitleText");
+  linkTitle.textContent = data.linkTitleText;
 }
 
 // Display LinkedIn link
 function displayLinkedInLink(data) {
-  let linkedInLink = document.getElementById("linkedInLink");
-  linkedInLink.innerHTML = data.linkedInLink.text;
+  const linkedInLink = document.getElementById("linkedInLink");
+  linkedInLink.textContent = data.linkedInLink.text;
   linkedInLink.href = data.linkedInLink.link;
 }
 
 // Display GitHub link
 function displayGitHubLink(data) {
-  let githubLink = document.getElementById("githubLink");
-  githubLink.innerHTML = data.githubLink.text;
+  const githubLink = document.getElementById("githubLink");
+  githubLink.textContent = data.githubLink.text;
   githubLink.href = data.githubLink.link;
 }
+
+// Display error message
+function displayError(message) {
+  const container = document.querySelector(".container");
+  const errorMsg = document.createElement("p");
+  errorMsg.textContent = message;
+  errorMsg.style.color = "#ff4d4d";
+  errorMsg.style.textAlign = "center";
+  container.appendChild(errorMsg);
+}
+
+// Display professional summary
+function displaySummary(text) {
+  const summarySection = document.createElement("div");
+  summarySection.className = "section";
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Professional Summary";
+
+  const paragraph = document.createElement("p");
+  paragraph.textContent = text;
+
+  summarySection.appendChild(heading);
+  summarySection.appendChild(paragraph);
+
+  document.querySelector(".right-panel").appendChild(summarySection);
+}
+
+// Display skills list
+function displaySkills(skills) {
+  const skillsSection = document.createElement("div");
+  skillsSection.className = "section";
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Technical Skills";
+
+  const list = document.createElement("ul");
+  skills.forEach((skill) => {
+    const item = document.createElement("li");
+    item.textContent = skill;
+    list.appendChild(item);
+  });
+
+  skillsSection.appendChild(heading);
+  skillsSection.appendChild(list);
+
+  document.querySelector(".right-panel").appendChild(skillsSection);
+}
+// Theme toggle functionality
+document.getElementById("themeToggle").addEventListener("click", () => {
+  document.body.classList.toggle("light-theme");
+});
 
 // Initialize data fetch
 getData();

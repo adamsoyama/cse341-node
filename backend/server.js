@@ -15,7 +15,14 @@ setupSwagger(app);
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static frontend files
 app.use(express.static(path.join(__dirname, "../frontend")));
+
+// Serve homepage explicitly
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/index.html"));
+});
 
 // Routes
 const dataRoutes = require("./routes/dataRoutes");
