@@ -1,0 +1,488 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Project 2 API",
+    "version": "1.0.0",
+    "description": "Comprehensive API documentation for Contacts and Tasks collections with OAuth security"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local development server"
+    },
+    {
+      "url": "https://your-render-app.onrender.com",
+      "description": "Production server on Render"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Use OAuth2 / JWT token for authorization"
+      }
+    },
+    "schemas": {
+      "Contact": {
+        "type": "object",
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "favoriteColor",
+          "birthday"
+        ],
+        "properties": {
+          "firstName": { "type": "string", "example": "Adams" },
+          "lastName": { "type": "string", "example": "Oyama" },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "adams@example.com"
+          },
+          "favoriteColor": { "type": "string", "example": "Blue" },
+          "birthday": {
+            "type": "string",
+            "format": "date",
+            "example": "1990-05-20"
+          },
+          "phone": { "type": "string", "example": "+2348012345678" },
+          "address": { "type": "string", "example": "Makurdi, Benue State" }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "required": ["title", "description", "dueDate"],
+        "properties": {
+          "title": { "type": "string", "example": "Build Portfolio Website" },
+          "description": {
+            "type": "string",
+            "example": "Create a responsive portfolio site showcasing projects and skills."
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-12-01"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["todo", "in_progress", "done"],
+            "example": "in_progress"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "example": "high"
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["frontend", "portfolio"]
+          },
+          "assignedContact": {
+            "type": "string",
+            "description": "MongoDB ObjectId referencing a Contact",
+            "example": "64b2f1c2a1d4e5f678901234"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string", "example": "Validation failed" },
+          "details": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["email must be a valid email"]
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/contacts": {
+      "get": {
+        "summary": "Get all contacts",
+        "responses": {
+          "200": {
+            "description": "List of contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Contact" }
+                },
+                "examples": {
+                  "sample": {
+                    "value": [
+                      {
+                        "firstName": "Adams",
+                        "lastName": "Oyama",
+                        "email": "adams@example.com",
+                        "favoriteColor": "Blue",
+                        "birthday": "1990-05-20",
+                        "phone": "+2348012345678",
+                        "address": "Makurdi, Benue State"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new contact",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Contact" },
+              "example": {
+                "firstName": "Ngozika",
+                "lastName": "Nwachukwu",
+                "email": "nwachukwuprec@gmail.com",
+                "favoriteColor": "Black",
+                "birthday": "2000-10-04",
+                "phone": "+2348090000000",
+                "address": "Abuja"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "created": {
+                    "value": {
+                      "_id": "64b2f1c2a1d4e5f678901234",
+                      "firstName": "Ngozika",
+                      "lastName": "Nwachukwu",
+                      "email": "nwachukwuprec@gmail.com",
+                      "favoriteColor": "Black",
+                      "birthday": "2000-10-04",
+                      "phone": "+2348090000000",
+                      "address": "Abuja"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - login required" }
+        }
+      }
+    },
+    "/contacts/{id}": {
+      "get": {
+        "summary": "Get contact by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Contact" },
+                "example": {
+                  "_id": "64b2f1c2a1d4e5f678901234",
+                  "firstName": "Adams",
+                  "lastName": "Oyama",
+                  "email": "adams@example.com",
+                  "favoriteColor": "Blue",
+                  "birthday": "1990-05-20"
+                }
+              }
+            }
+          },
+          "404": { "description": "Contact not found" }
+        }
+      },
+      "put": {
+        "summary": "Update a contact",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Contact" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated",
+            "content": {
+              "application/json": {
+                "example": {
+                  "_id": "64b2f1c2a1d4e5f678901234",
+                  "firstName": "Adams",
+                  "lastName": "Oyama",
+                  "email": "adams@example.com",
+                  "favoriteColor": "Blue",
+                  "birthday": "1990-05-20"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - login required" },
+          "404": { "description": "Contact not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a contact",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted",
+            "content": {
+              "application/json": {
+                "example": { "message": "Contact deleted successfully" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - login required" },
+          "404": { "description": "Contact not found" }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "summary": "Get all tasks",
+        "responses": {
+          "200": {
+            "description": "List of tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Task" }
+                },
+                "examples": {
+                  "sample": {
+                    "value": [
+                      {
+                        "title": "Build Portfolio Website",
+                        "description": "Create a responsive portfolio site showcasing projects and skills.",
+                        "dueDate": "2025-12-01",
+                        "status": "in_progress",
+                        "priority": "high",
+                        "tags": ["frontend", "portfolio"],
+                        "assignedContact": "64b2f1c2a1d4e5f678901234"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new task",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Task" },
+              "example": {
+                "title": "API Documentation",
+                "description": "Write Swagger docs for all endpoints.",
+                "dueDate": "2025-11-25",
+                "status": "todo",
+                "priority": "medium",
+                "tags": ["backend", "swagger"],
+                "assignedContact": "64b2f1c2a1d4e5f678901234"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Task created",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "created": {
+                    "value": {
+                      "_id": "64b2f1c2a1d4e5f678901999",
+                      "title": "API Documentation",
+                      "description": "Write Swagger docs for all endpoints.",
+                      "dueDate": "2025-11-25",
+                      "status": "todo",
+                      "priority": "medium",
+                      "tags": ["backend", "swagger"],
+                      "assignedContact": "64b2f1c2a1d4e5f678901234"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - login required" }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "summary": "Get task by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Task" },
+                "example": {
+                  "_id": "64b2f1c2a1d4e5f678901999",
+                  "title": "Build Portfolio Website",
+                  "description": "Create a responsive portfolio site showcasing projects and skills.",
+                  "dueDate": "2025-12-01",
+                  "status": "in_progress",
+                  "priority": "high",
+                  "tags": ["frontend", "portfolio"],
+                  "assignedContact": "64b2f1c2a1d4e5f678901234"
+                }
+              }
+            }
+          },
+          "404": { "description": "Task not found" }
+        }
+      },
+      "put": {
+        "summary": "Update a task",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Task" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task updated",
+            "content": {
+              "application/json": {
+                "example": {
+                  "_id": "64b2f1c2a1d4e5f678901999",
+                  "title": "Build Portfolio Website",
+                  "description": "Updated description",
+                  "dueDate": "2025-12-01",
+                  "status": "done",
+                  "priority": "high",
+                  "tags": ["frontend", "portfolio"],
+                  "assignedContact": "64b2f1c2a1d4e5f678901234"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - login required" },
+          "404": { "description": "Task not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a task",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task deleted",
+            "content": {
+              "application/json": {
+                "example": { "message": "Task deleted successfully" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - login required" },
+          "404": { "description": "Task not found" }
+        }
+      }
+    }
+  }
+}

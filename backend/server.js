@@ -3,6 +3,9 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("passport");
+const errorHandler = require("./middleware/errorHandler");
 require("dotenv").config();
 
 // Initialize Express app
@@ -16,6 +19,23 @@ setupSwagger(app);
 app.use(cors());
 app.use(express.json());
 
+// Session middleware (required for OAuth)
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// Passport setup
+require("./middleware/passport"); // Google strategy config
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Error handler (after JSON parsing, before routes)
+app.use(errorHandler);
+
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, "../frontend")));
 
@@ -27,8 +47,13 @@ app.get("/", (req, res) => {
 // Routes
 const dataRoutes = require("./routes/dataRoutes");
 const contactRoutes = require("./routes/contactRoutes");
+const taskRoutes = require("./routes/taskRoutes");
+const authRoutes = require("./routes/authRoutes");
+
 app.use("/professional", dataRoutes);
 app.use("/contacts", contactRoutes);
+app.use("/tasks", taskRoutes);
+app.use("/auth", authRoutes); // OAuth login/logout
 
 // MongoDB connection
 mongoose

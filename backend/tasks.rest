@@ -1,0 +1,43 @@
+### Get all tasks
+GET http://localhost:8080/tasks
+
+### Get task by ID (replace with a real _id from MongoDB)
+GET http://localhost:8080/tasks/64b2f1c2a1d4e5f678901999
+
+### Create a new task (valid)
+POST http://localhost:8080/tasks
+Content-Type: application/json
+
+{
+  "title": "New Test Task",
+  "description": "This is a test task created via REST client.",
+  "dueDate": "2025-12-31",
+  "status": "todo",
+  "priority": "medium",
+  "tags": ["testing", "rest"]
+}
+
+### Create a new task (invalid - missing title)
+POST http://localhost:8080/tasks
+Content-Type: application/json
+
+{
+  "description": "Missing title field",
+  "dueDate": "2025-12-31"
+}
+
+### Update a task (replace with a real _id)
+PUT http://localhost:8080/tasks/64b2f1c2a1d4e5f678901999
+Content-Type: application/json
+
+{
+  "title": "Updated Task",
+  "description": "Updated description",
+  "dueDate": "2025-12-31",
+  "status": "in_progress",
+  "priority": "high",
+  "tags": ["updated", "rest"]
+}
+
+### Delete a task (replace with a real _id)
+DELETE http://localhost:8080/tasks/64b2f1c2a1d4e5f678901999

@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 // Import your models
 const Data = require("./models/Data");
 const Contact = require("./models/Contact");
+const Task = require("./models/Task"); // ✅ Added Task model
 
 // Debug: Print the MongoDB URI to confirm it's being read correctly
 console.log("Connecting to:", process.env.MONGO_URI);
@@ -95,6 +96,59 @@ mongoose
     ];
     await Contact.insertMany(contacts);
     console.log("✅ Contacts seeded");
+
+    // 🔁 Seed Tasks Collection
+    await Task.deleteMany();
+    const tasks = [
+      {
+        title: "Build Portfolio Website",
+        description:
+          "Create a responsive portfolio site showcasing projects and skills.",
+        dueDate: new Date("2025-12-01"),
+        status: "in_progress",
+        priority: "high",
+        tags: ["portfolio", "frontend"],
+        assignedContact: null, // can be set to a Contact _id later
+      },
+      {
+        title: "API Documentation",
+        description: "Write Swagger docs for all endpoints.",
+        dueDate: new Date("2025-11-25"),
+        status: "todo",
+        priority: "medium",
+        tags: ["backend", "swagger"],
+        assignedContact: null,
+      },
+      {
+        title: "Database Optimization",
+        description: "Add indexes and optimize queries for performance.",
+        dueDate: new Date("2025-12-10"),
+        status: "todo",
+        priority: "low",
+        tags: ["database", "optimization"],
+        assignedContact: null,
+      },
+      {
+        title: "OAuth Integration",
+        description: "Implement Google OAuth for user authentication.",
+        dueDate: new Date("2025-12-05"),
+        status: "todo",
+        priority: "high",
+        tags: ["auth", "security"],
+        assignedContact: null,
+      },
+      {
+        title: "Testing Suite",
+        description: "Add Jest + Supertest integration tests for API routes.",
+        dueDate: new Date("2025-12-15"),
+        status: "todo",
+        priority: "medium",
+        tags: ["testing", "quality"],
+        assignedContact: null,
+      },
+    ];
+    await Task.insertMany(tasks);
+    console.log("✅ Tasks seeded");
 
     // Disconnect after seeding
     mongoose.disconnect();

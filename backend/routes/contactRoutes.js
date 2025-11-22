@@ -22,92 +22,17 @@
  *         birthday:
  *           type: string
  *           format: date
- */
-
-/**
- * @swagger
- * /contacts:
- *   get:
- *     summary: Get all contacts
- *     responses:
- *       200:
- *         description: List of contacts
- */
-
-/**
- * @swagger
- * /contacts/{id}:
- *   get:
- *     summary: Get contact by ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
+ *         phone:
  *           type: string
- *     responses:
- *       200:
- *         description: Contact found
- *       404:
- *         description: Contact not found
- */
-
-/**
- * @swagger
- * /contacts:
- *   post:
- *     summary: Create a new contact
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Contact'
- *     responses:
- *       201:
- *         description: Contact created
- */
-
-/**
- * @swagger
- * /contacts/{id}:
- *   put:
- *     summary: Update a contact
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
+ *         address:
  *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Contact'
- *     responses:
- *       200:
- *         description: Contact updated
- */
-
-/**
- * @swagger
- * /contacts/{id}:
- *   delete:
- *     summary: Delete a contact
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Contact deleted
  */
 
 const express = require("express");
 const router = express.Router();
+const Joi = require("joi");
+const validate = require("../middleware/validate");
+
 const {
   getContacts,
   getContactById,
@@ -116,17 +41,28 @@ const {
   deleteContact,
 } = require("../controllers/contactController");
 
+// Joi schema for validation
+const contactSchema = Joi.object({
+  firstName: Joi.string().trim().required(),
+  lastName: Joi.string().trim().required(),
+  email: Joi.string().email().required(),
+  favoriteColor: Joi.string().required(),
+  birthday: Joi.date().iso().required(),
+  phone: Joi.string().optional(),
+  address: Joi.string().optional(),
+});
+
 // GET all contacts
 router.get("/", getContacts);
 
 // GET contact by ID
 router.get("/:id", getContactById);
 
-// POST new contact
-router.post("/", createContact);
+// POST new contact (with validation)
+router.post("/", validate(contactSchema), createContact);
 
-// PUT update contact
-router.put("/:id", updateContact);
+// PUT update contact (with validation)
+router.put("/:id", validate(contactSchema), updateContact);
 
 // DELETE contact
 router.delete("/:id", deleteContact);
