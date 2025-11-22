@@ -1,5 +1,12 @@
 /**
  * @swagger
+ * tags:
+ *   name: Tasks
+ *   description: API for managing tasks
+ */
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Task:
@@ -55,19 +62,113 @@ const taskSchema = Joi.object({
   assignedContact: Joi.string().hex().length(24).optional(),
 });
 
-// GET all tasks
+/**
+ * @swagger
+ * /tasks:
+ *   get:
+ *     summary: Get all tasks
+ *     tags: [Tasks]
+ *     responses:
+ *       200:
+ *         description: List of tasks
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Task'
+ */
 router.get("/", getTasks);
 
-// GET task by ID
+/**
+ * @swagger
+ * /tasks/{id}:
+ *   get:
+ *     summary: Get a task by ID
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The task ID
+ *     responses:
+ *       200:
+ *         description: Task found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Task'
+ *       404:
+ *         description: Task not found
+ */
 router.get("/:id", getTaskById);
 
-// POST new task (with validation)
+/**
+ * @swagger
+ * /tasks:
+ *   post:
+ *     summary: Create a new task
+ *     tags: [Tasks]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Task'
+ *     responses:
+ *       201:
+ *         description: Task created successfully
+ */
 router.post("/", validate(taskSchema), createTask);
 
-// PUT update task (with validation)
+/**
+ * @swagger
+ * /tasks/{id}:
+ *   put:
+ *     summary: Update a task by ID
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The task ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Task'
+ *     responses:
+ *       200:
+ *         description: Task updated successfully
+ *       404:
+ *         description: Task not found
+ */
 router.put("/:id", validate(taskSchema), updateTask);
 
-// DELETE task
+/**
+ * @swagger
+ * /tasks/{id}:
+ *   delete:
+ *     summary: Delete a task by ID
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The task ID
+ *     responses:
+ *       200:
+ *         description: Task deleted successfully
+ *       404:
+ *         description: Task not found
+ */
 router.delete("/:id", deleteTask);
 
 module.exports = router;

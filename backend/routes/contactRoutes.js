@@ -1,5 +1,12 @@
 /**
  * @swagger
+ * tags:
+ *   name: Contacts
+ *   description: API for managing contacts
+ */
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Contact:
@@ -52,19 +59,113 @@ const contactSchema = Joi.object({
   address: Joi.string().optional(),
 });
 
-// GET all contacts
+/**
+ * @swagger
+ * /contacts:
+ *   get:
+ *     summary: Get all contacts
+ *     tags: [Contacts]
+ *     responses:
+ *       200:
+ *         description: List of contacts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Contact'
+ */
 router.get("/", getContacts);
 
-// GET contact by ID
+/**
+ * @swagger
+ * /contacts/{id}:
+ *   get:
+ *     summary: Get a contact by ID
+ *     tags: [Contacts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The contact ID
+ *     responses:
+ *       200:
+ *         description: Contact found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Contact'
+ *       404:
+ *         description: Contact not found
+ */
 router.get("/:id", getContactById);
 
-// POST new contact (with validation)
+/**
+ * @swagger
+ * /contacts:
+ *   post:
+ *     summary: Create a new contact
+ *     tags: [Contacts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Contact'
+ *     responses:
+ *       201:
+ *         description: Contact created successfully
+ */
 router.post("/", validate(contactSchema), createContact);
 
-// PUT update contact (with validation)
+/**
+ * @swagger
+ * /contacts/{id}:
+ *   put:
+ *     summary: Update a contact by ID
+ *     tags: [Contacts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The contact ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Contact'
+ *     responses:
+ *       200:
+ *         description: Contact updated successfully
+ *       404:
+ *         description: Contact not found
+ */
 router.put("/:id", validate(contactSchema), updateContact);
 
-// DELETE contact
+/**
+ * @swagger
+ * /contacts/{id}:
+ *   delete:
+ *     summary: Delete a contact by ID
+ *     tags: [Contacts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The contact ID
+ *     responses:
+ *       200:
+ *         description: Contact deleted successfully
+ *       404:
+ *         description: Contact not found
+ */
 router.delete("/:id", deleteContact);
 
 module.exports = router;
