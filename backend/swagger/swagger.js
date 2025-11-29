@@ -33,7 +33,7 @@ const options = {
             },
             email: {
               type: "string",
-              example: "adams@example.com",
+              example: "adamsoyama@gmail.com",
             },
             favoriteColor: {
               type: "string",
